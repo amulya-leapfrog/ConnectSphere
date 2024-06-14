@@ -7,9 +7,15 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { useFormik } from "formik";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ILogin } from "../interfaces/Auth";
 import { loginSchema } from "../schemas/authSchema";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../services/Auth";
+import { setCookies } from "../utils/cookies";
+import { AxiosError } from "axios";
+import { getErrorMessage } from "../utils/errors";
+import { useAuth } from "../context/AuthContext";
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
@@ -30,16 +36,43 @@ const LoginForm = () => {
   const classes = useStyles();
 
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [apiError, setApiError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const { isLogin } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (values: ILogin) => {
     setIsButtonEnabled(false);
     try {
-      // const response = await login(values);
-      console.log("Login: ", values);
+      const { accessToken, refreshToken } = await login(values);
+      setCookies(accessToken, refreshToken);
+      isLogin();
+      navigate("/home");
     } catch (error) {
-      console.log(error);
       setIsButtonEnabled(true);
+      if (
+        error instanceof AxiosError &&
+        (error.response?.status === 403 || error.response?.status === 404)
+      ) {
+        const errMessage = getErrorMessage(error);
+        setApiError(errMessage);
+      } else if (error instanceof AxiosError) {
+        const errMessage = String(error.response?.data.message);
+        console.log("Throw toast: ", errMessage);
+      } else {
+        console.log("Some generic message");
+      }
     }
+  };
+
+  const displayError = () => {
+    if (apiError) {
+      return <div className="error">{apiError}</div>;
+    }
+    if (formik.touched.password && formik.errors.password) {
+      return <div className="error">{formik.errors.password}</div>;
+    }
+    return "";
   };
 
   const formik = useFormik<ILogin>({
@@ -70,7 +103,13 @@ const LoginForm = () => {
           <Typography variant="h4" gutterBottom>
             <div className="login__header">Login</div>
           </Typography>
-          <form onSubmit={formik.handleSubmit} id="form">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              formik.handleSubmit(e);
+            }}
+            id="form"
+          >
             <div>
               <TextField
                 className={classes.textField}
@@ -87,21 +126,37 @@ const LoginForm = () => {
               )}
             </div>
             <div>
-              <TextField
-                className={classes.textField}
-                label="Password"
-                variant="outlined"
-                fullWidth
-                type="password"
-                value={formik.values.password}
-                onChange={(e) => {
-                  formik.setFieldValue("password", e.target.value);
-                }}
-              />
-              {formik.touched.password && formik.errors.password && (
-                <div className="error">{formik.errors.password}</div>
-              )}
+              <div>
+                <TextField
+                  className={classes.textField}
+                  label="Password"
+                  variant="outlined"
+                  fullWidth
+                  type={showPassword ? "text" : "password"}
+                  value={formik.values.password}
+                  onChange={(e) => {
+                    formik.setFieldValue("password", e.target.value);
+                  }}
+                />
+                <button
+                  type="button"
+                  className="form-login__password_eye"
+                  onClick={() => setShowPassword(!showPassword)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setShowPassword(!showPassword);
+                    }
+                  }}
+                >
+                  {showPassword ? <FaEye /> : <FaEyeSlash />}
+                </button>
+                {formik.touched.password && formik.errors.password && (
+                  <div className="error">{formik.errors.password}</div>
+                )}
+              </div>
             </div>
+            {displayError()}
+
             <Button
               className={classes.button}
               disabled={!formik.dirty || !isButtonEnabled}

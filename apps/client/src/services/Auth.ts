@@ -13,3 +13,9 @@ export const signup = async (signupData: ISignup) => {
 
   return data;
 };
+
+export const me = async () => {
+  const { data } = await http.get(apiEndPoints.me);
+
+  return data;
+};

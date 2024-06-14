@@ -4,6 +4,7 @@ import { LoginDto } from './dto/LoginDto';
 import { SignupDto } from './dto/SignupDto';
 import { CustomRequest } from '@/interfaces/jwt';
 import { RefreshGuard } from './guard/refresh.guard';
+import { JwtGuard } from './guard';
 
 @Controller('auth')
 export class AuthController {
@@ -39,8 +40,10 @@ export class AuthController {
     }
   }
 
-  @Get('data')
-  getAll() {
-    return this.authService.getData();
+  @UseGuards(JwtGuard)
+  @Get('me')
+  getMyData(@Req() req: CustomRequest) {
+    const userId = req.user.id;
+    return this.authService.getMyData(userId);
   }
 }

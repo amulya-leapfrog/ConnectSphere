@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { GremlinService } from '../gremlin/gremlin.service';
 import { LoginDto } from './dto/LoginDto';
 import { SignupDto } from './dto/SignupDto';
-import vertexDataParser from '@/utils/vertexDataParser';
+import { extractUserData, vertexDataParser } from '@/utils/vertexDataParser';
 import { JwtPayload } from '@/interfaces/jwt';
 import { JwtService } from '@nestjs/jwt';
 
@@ -24,13 +24,24 @@ export class AuthService {
       .toList();
 
     if (response.length === 0) {
-      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        'Invalid Email or Password',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     const userData = vertexDataParser(response);
 
-    if (data.password !== userData[0].password.value) {
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    const isPasswordMatch = await bcrypt.compare(
+      data.password,
+      userData[0].password.value,
+    );
+
+    if (!isPasswordMatch) {
+      throw new HttpException(
+        'Invalid Email or Password',
+        HttpStatus.FORBIDDEN,
+      );
     }
 
     const jwtPayload = {
@@ -66,11 +77,20 @@ export class AuthService {
     return { user: response.value.id };
   }
 
-  async getData() {
+  async getMyData(userId: number) {
     const gremlinInstance = this.gremlinService.getClient();
-    const response = await gremlinInstance.V().toList();
+    const response = await gremlinInstance
+      .V()
+      .hasLabel('user')
+      .hasId(userId)
+      .toList();
+
+    const userData = vertexDataParser(response);
+
     this.gremlinService.onModuleDestroy();
-    return { data: response, count: response.length };
+
+    const extractedData = extractUserData(userData);
+    return extractedData[0];
   }
 
   refreshToken(userId: number) {
@@ -80,7 +100,7 @@ export class AuthService {
 
     const accessToken = this.createAccessToken(jwtPayload);
 
-    return accessToken;
+    return { accessToken };
   }
 
   createAccessToken(payload: JwtPayload) {
@@ -94,7 +114,7 @@ export class AuthService {
 
   createRefreshToken = (payload: JwtPayload) => {
     const refreshToken = this.jwt.sign(payload, {
-      expiresIn: '1hr',
+      expiresIn: '1h',
       secret: process.env.REFRESH_TOKEN_SECRET,
     });
 
