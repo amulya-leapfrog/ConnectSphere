@@ -3,4 +3,5 @@ export const apiEndPoints = {
   signup: "/auth/signup",
   refresh: "/auth/refresh",
   me: "/auth/me",
+  users: "/users",
 };

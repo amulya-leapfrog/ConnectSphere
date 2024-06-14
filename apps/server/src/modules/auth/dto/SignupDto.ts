@@ -21,4 +21,6 @@ export class SignupDto {
   phone: string;
 
   bio: string;
+
+  image: string | null;
 }

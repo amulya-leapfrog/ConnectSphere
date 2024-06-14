@@ -1,14 +1,30 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/LoginDto';
 import { SignupDto } from './dto/SignupDto';
 import { CustomRequest } from '@/interfaces/jwt';
 import { RefreshGuard } from './guard/refresh.guard';
 import { JwtGuard } from './guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MinioService } from '../minio.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private minioService: MinioService,
+  ) {}
 
   @Post('login')
   login(@Body() loginDto: LoginDto) {
@@ -20,9 +36,31 @@ export class AuthController {
   }
 
   @Post('signup')
-  signup(@Body() signupDto: SignupDto) {
+  @UseInterceptors(FileInterceptor('image'))
+  async signup(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() signupDto: SignupDto,
+  ) {
     try {
-      return this.authService.signup(signupDto);
+      if (
+        file &&
+        !(file.mimetype.includes('jpeg') || file.mimetype.includes('png'))
+      ) {
+        throw new HttpException('Error uploading file', HttpStatus.BAD_REQUEST);
+      }
+
+      let fileName: string | null = null;
+
+      if (file) {
+        fileName = await this.minioService.uploadFile(file);
+      }
+
+      const userInsert = {
+        ...signupDto,
+        image: fileName,
+      };
+
+      return this.authService.signup(userInsert);
     } catch (error) {
       return error;
     }

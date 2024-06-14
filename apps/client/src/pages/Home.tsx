@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import { me } from "../services/Auth";
+import Logout from "../components/Logout";
 
 export default function Home() {
-  const [count, setCount] = useState("");
+  const [name, setName] = useState("");
+  const [img, setImg] = useState("");
 
   useEffect(() => {
     const getInfo = async () => {
       try {
         const data = await me();
-        setCount(data.fullName);
-        console.log(data);
+        setName(data.fullName);
+        setImg(data.image);
       } catch (error) {
         console.log(error);
       }
@@ -22,7 +24,13 @@ export default function Home() {
   return (
     <div>
       <Header />
-      <h3>This is Home page: {count}</h3>
+      <h3>This is Home page: {name}</h3>
+      <img
+        src={img ? img : "/default.jpg"}
+        alt="Profile Pic"
+        style={{ width: "200px", height: "auto" }}
+      />
+      <Logout />
     </div>
   );
 }

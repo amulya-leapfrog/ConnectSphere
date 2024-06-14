@@ -1,18 +1,23 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { signup } from "../services/Auth";
 import { ISignup } from "../interfaces/Auth";
 import { signupSchema } from "../schemas/authSchema";
 import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Signup() {
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (values: ISignup) => {
     setIsButtonEnabled(false);
     try {
       const response = await signup(values);
-      console.log("Login: ", response);
+      console.log("Signup success: ", response);
+      navigate("/");
     } catch (error) {
       console.log(error);
       setIsButtonEnabled(true);
@@ -27,6 +32,7 @@ export default function Signup() {
       residence: "",
       phone: "",
       bio: "",
+      image: null,
     },
 
     validationSchema: signupSchema,
@@ -41,7 +47,8 @@ export default function Signup() {
         !values.password ||
         !values.fullName ||
         !values.phone ||
-        !values.residence
+        !values.residence ||
+        !values.bio
       ) {
         setIsButtonEnabled(false);
       } else {
@@ -57,7 +64,11 @@ export default function Signup() {
         <button>Go back to login</button>
       </Link>
 
-      <form onSubmit={formik.handleSubmit} className="form__login">
+      <form
+        onSubmit={formik.handleSubmit}
+        className="form__login"
+        encType="multipart/form-data"
+      >
         <div className="form-login__inputs">
           <label htmlFor="email">Email</label>
           <input
@@ -76,7 +87,7 @@ export default function Signup() {
         <div className="form-login__inputs">
           <label htmlFor="password">Password</label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
             onChange={(e) => {
               formik.setFieldValue("password", e.target.value);
@@ -86,6 +97,18 @@ export default function Signup() {
           {formik.touched.password && formik.errors.password && (
             <div style={{ color: "red" }}>{formik.errors.password}</div>
           )}
+          <button
+            type="button"
+            className="form-login__password_eye"
+            onClick={() => setShowPassword(!showPassword)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setShowPassword(!showPassword);
+              }
+            }}
+          >
+            {showPassword ? <FaEye /> : <FaEyeSlash />}
+          </button>
         </div>
 
         <div className="form-login__inputs">
@@ -141,6 +164,18 @@ export default function Signup() {
               formik.setFieldValue("bio", e.target.value);
             }}
             value={formik.values.bio}
+          />
+        </div>
+
+        <div className="form-login__inputs">
+          <label htmlFor="image">Profile Pic</label>
+          <input
+            name="image"
+            type="file"
+            onChange={(e) => {
+              const file = e.target.files && e.target.files[0];
+              formik.setFieldValue("image", file);
+            }}
           />
         </div>
 

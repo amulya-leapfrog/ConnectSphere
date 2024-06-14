@@ -8,4 +8,5 @@ export interface ISignup extends ILogin {
   residence: string;
   phone: string;
   bio?: string;
+  image: File | string | null;
 }

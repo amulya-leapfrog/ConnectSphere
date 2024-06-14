@@ -6,12 +6,14 @@ import { SignupDto } from './dto/SignupDto';
 import { extractUserData, vertexDataParser } from '@/utils/vertexDataParser';
 import { JwtPayload } from '@/interfaces/jwt';
 import { JwtService } from '@nestjs/jwt';
+import { MinioService } from '../minio.service';
 
 @Injectable({})
 export class AuthService {
   constructor(
     private gremlinService: GremlinService,
     private jwt: JwtService,
+    private minioService: MinioService,
   ) {}
 
   async login(data: LoginDto) {
@@ -60,7 +62,7 @@ export class AuthService {
     const salt = await bcrypt.genSalt(15);
     const hashedPassword = await bcrypt.hash(data.password, salt);
 
-    // profile pics
+    const image = data.image ? data.image : 'null';
 
     const response = await gremlinInsert
       .addV('user')
@@ -70,15 +72,15 @@ export class AuthService {
       .property('residence', data.residence)
       .property('phone', data.phone)
       .property('bio', data.bio)
+      .property('image', image)
       .next();
-
-    this.gremlinService.onModuleDestroy();
 
     return { user: response.value.id };
   }
 
   async getMyData(userId: number) {
     const gremlinInstance = this.gremlinService.getClient();
+
     const response = await gremlinInstance
       .V()
       .hasLabel('user')
@@ -87,10 +89,20 @@ export class AuthService {
 
     const userData = vertexDataParser(response);
 
-    this.gremlinService.onModuleDestroy();
-
     const extractedData = extractUserData(userData);
-    return extractedData[0];
+
+    let imgURL: string | null = null;
+
+    if (extractedData[0].image !== 'null') {
+      imgURL = await this.minioService.getFileUrl(extractedData[0].image);
+    }
+
+    const reponseUser = {
+      ...extractedData[0],
+      image: imgURL,
+    };
+
+    return reponseUser;
   }
 
   refreshToken(userId: number) {
