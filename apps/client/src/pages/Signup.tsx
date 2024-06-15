@@ -15,8 +15,7 @@ export default function Signup() {
   const handleSubmit = async (values: ISignup) => {
     setIsButtonEnabled(false);
     try {
-      const response = await signup(values);
-      console.log("Signup success: ", response);
+      await signup(values);
       navigate("/");
     } catch (error) {
       console.log(error);

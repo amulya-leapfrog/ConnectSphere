@@ -8,6 +8,7 @@ import AuthProvider from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import Logout from "./components/Logout";
 import Explore from "./pages/Explore";
+import MyFriends from "./pages/MyFriends";
 
 function App() {
   return (
@@ -40,6 +41,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="myfriends"
+              element={
+                <ProtectedRoute>
+                  <MyFriends />
                 </ProtectedRoute>
               }
             />

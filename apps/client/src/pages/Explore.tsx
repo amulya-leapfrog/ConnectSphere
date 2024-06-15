@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUsers } from "../services/Users";
+import { getUsers, sendFriendReq } from "../services/Users";
 import Header from "../components/Header";
 
 export interface UserData {
@@ -21,7 +21,6 @@ export default function Explore() {
       try {
         const data = await getUsers();
         setUsers(data);
-        console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -29,6 +28,15 @@ export default function Explore() {
 
     getInfo();
   }, []);
+
+  const handleFriendRequest = async (id: number) => {
+    try {
+      await sendFriendReq({ targetId: id });
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
@@ -45,6 +53,9 @@ export default function Explore() {
             alt="Profile Pic"
             style={{ width: "200px", height: "auto" }}
           />
+          <button onClick={() => handleFriendRequest(item.id)}>
+            Send a friend request
+          </button>
         </div>
       ))}
     </div>

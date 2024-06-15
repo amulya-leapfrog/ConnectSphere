@@ -6,6 +6,7 @@ export default function Header() {
       <Link to="/home">Home</Link>
       <Link to="/profile">Profile</Link>
       <Link to="/explore">Explore</Link>
+      <Link to="/myfriends">My Friends</Link>
     </div>
   );
 }

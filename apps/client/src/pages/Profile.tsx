@@ -27,9 +27,7 @@ export default function Profile() {
   const handleSubmit = async (values: IUpdate) => {
     setIsButtonEnabled(false);
     try {
-      console.log(values);
-      const response = await updateMe(values);
-      console.log("Update success: ", response);
+      await updateMe(values);
       window.location.reload();
     } catch (error) {
       console.log(error);
@@ -68,8 +66,7 @@ export default function Profile() {
 
   const handleImageDelete = async (isDelete: boolean) => {
     try {
-      const response = await updatePic({ isDelete });
-      console.log("Update success: ", response);
+      await updatePic({ isDelete });
       window.location.reload();
     } catch (error) {
       console.log(error);
@@ -81,10 +78,9 @@ export default function Profile() {
       image: selectedFile,
       isDelete: false,
     };
-    console.log(updateImage);
+
     try {
-      const response = await updatePic(updateImage);
-      console.log("Update success: ", response);
+      await updatePic(updateImage);
       window.location.reload();
     } catch (error) {
       console.log(error);
