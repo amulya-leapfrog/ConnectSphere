@@ -13,6 +13,7 @@ export default function Home() {
         const data = await me();
         setName(data.fullName);
         setImg(data.image);
+        console.log(data);
       } catch (error) {
         console.log(error);
       }

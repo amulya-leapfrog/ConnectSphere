@@ -1,7 +1,7 @@
 export interface UserData {
   id: number;
   label: string;
-  image: string | null;
+  image: string | null | boolean;
   phone: string;
   fullName: string;
   bio: string;

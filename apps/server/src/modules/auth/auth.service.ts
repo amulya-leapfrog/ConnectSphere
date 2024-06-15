@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { GremlinService } from '../gremlin/gremlin.service';
 import { LoginDto } from './dto/LoginDto';
-import { SignupDto } from './dto/SignupDto';
+import { SignupDto, UpdateDto } from './dto/SignupDto';
 import { extractUserData, vertexDataParser } from '@/utils/vertexDataParser';
 import { JwtPayload } from '@/interfaces/jwt';
 import { JwtService } from '@nestjs/jwt';
@@ -62,7 +62,7 @@ export class AuthService {
     const salt = await bcrypt.genSalt(15);
     const hashedPassword = await bcrypt.hash(data.password, salt);
 
-    const image = data.image ? data.image : 'null';
+    const image = data.image ? data.image : false;
 
     const response = await gremlinInsert
       .addV('user')
@@ -93,7 +93,7 @@ export class AuthService {
 
     let imgURL: string | null = null;
 
-    if (extractedData[0].image !== 'null') {
+    if (extractedData[0].image !== false) {
       imgURL = await this.minioService.getFileUrl(extractedData[0].image);
     }
 
@@ -103,6 +103,32 @@ export class AuthService {
     };
 
     return reponseUser;
+  }
+
+  async updateMe(id: number, data: UpdateDto) {
+    const gremlinInsert = this.gremlinService.getClient();
+    await gremlinInsert
+      .V(id)
+      .property('email', data.email)
+      .property('fullName', data.fullName)
+      .property('residence', data.residence)
+      .property('phone', data.phone)
+      .property('bio', data.bio)
+      .next();
+    return new HttpException('Update successful', HttpStatus.OK);
+  }
+
+  async updateMyPic(id: number, fileName: string | null) {
+    const image = fileName ? fileName : false;
+    const gremlinInsert = this.gremlinService.getClient();
+    await gremlinInsert.V(id).property('image', image).next();
+    return new HttpException('Update successful', HttpStatus.OK);
+  }
+
+  async getFileName(id: number) {
+    const gremlinInsert = this.gremlinService.getClient();
+    const fileName = await gremlinInsert.V(id).values('image').toList();
+    return fileName[0];
   }
 
   refreshToken(userId: number) {

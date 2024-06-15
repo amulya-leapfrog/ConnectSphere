@@ -4,4 +4,6 @@ export const apiEndPoints = {
   refresh: "/auth/refresh",
   me: "/auth/me",
   users: "/users",
+  updateMe: "auth/me/update",
+  updateMyPic: "auth/me/updatePic",
 };

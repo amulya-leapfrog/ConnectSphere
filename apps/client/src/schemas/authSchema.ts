@@ -15,3 +15,14 @@ export const signupSchema = loginSchema.shape({
     .typeError(AUTH.VALIDATION.PHONE_VALID)
     .required(AUTH.VALIDATION.PHONE),
 });
+
+export const updateSchema = Yup.object().shape({
+  email: Yup.string()
+    .email(AUTH.VALIDATION.EMAIL_VALID)
+    .required(AUTH.VALIDATION.EMAIL_REQUIRED),
+  fullName: Yup.string().required(AUTH.VALIDATION.FULLNAME),
+  residence: Yup.string().required(AUTH.VALIDATION.RESIDENCE),
+  phone: Yup.number()
+    .typeError(AUTH.VALIDATION.PHONE_VALID)
+    .required(AUTH.VALIDATION.PHONE),
+});

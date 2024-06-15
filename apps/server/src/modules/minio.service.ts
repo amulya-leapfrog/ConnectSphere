@@ -25,7 +25,7 @@ export class MinioService {
   }
 
   async uploadFile(file: Express.Multer.File) {
-    const fileName = `${Date.now()}-${file.originalname}`;
+    const fileName = `${Math.floor(Math.random() * 10000)}${Date.now()}-${file.originalname}`;
 
     await this.minioClient.putObject(
       this.bucketName,

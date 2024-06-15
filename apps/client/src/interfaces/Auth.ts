@@ -10,3 +10,16 @@ export interface ISignup extends ILogin {
   bio?: string;
   image: File | string | null;
 }
+
+export interface IUpdate {
+  email?: string;
+  fullName?: string;
+  residence?: string;
+  phone?: string;
+  bio?: string;
+}
+
+export interface IUpdateImage {
+  image?: File | null;
+  isDelete: boolean;
+}

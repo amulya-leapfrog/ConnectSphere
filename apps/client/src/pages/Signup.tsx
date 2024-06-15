@@ -47,8 +47,7 @@ export default function Signup() {
         !values.password ||
         !values.fullName ||
         !values.phone ||
-        !values.residence ||
-        !values.bio
+        !values.residence
       ) {
         setIsButtonEnabled(false);
       } else {

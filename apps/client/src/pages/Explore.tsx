@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getUsers } from "../services/Users";
 import Header from "../components/Header";
 
-interface UserData {
+export interface UserData {
   id: number;
   label: string;
   image: string | null;
@@ -21,6 +21,7 @@ export default function Explore() {
       try {
         const data = await getUsers();
         setUsers(data);
+        console.log(data);
       } catch (error) {
         console.log(error);
       }

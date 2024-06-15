@@ -24,7 +24,7 @@ export class UserService {
         .filter((item) => item.id !== id)
         .map(async (item) => {
           let imgURL: string | null = null;
-          if (item.image !== 'null') {
+          if (item.image !== false) {
             imgURL = await this.minioService.getFileUrl(String(item.image));
           }
           return { ...item, image: imgURL };
