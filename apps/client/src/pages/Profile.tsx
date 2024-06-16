@@ -3,31 +3,27 @@ import { useFormik } from "formik";
 import { me, updateMe, updatePic } from "../services/Auth";
 import { IUpdate, IUpdateImage } from "../interfaces/Auth";
 import { updateSchema } from "../schemas/authSchema";
-import { useEffect, useState } from "react";
-import { UserData } from "./Explore";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function Profile() {
+  const queryClient = useQueryClient();
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
-  const [users, setUsers] = useState<UserData>();
   const [selectedFile, setSelectedFile] = useState<File | null>();
 
-  useEffect(() => {
-    const getInfo = async () => {
-      try {
-        const data = await me();
-        setUsers(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getInfo();
-  }, []);
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["myDetails"],
+    queryFn: me,
+    staleTime: 1000 * 60 * 60,
+  });
 
   const handleSubmit = async (values: IUpdate) => {
     setIsButtonEnabled(false);
     try {
       await updateMe(values);
+      queryClient.invalidateQueries({
+        queryKey: ["myDetails"],
+      });
       window.location.reload();
     } catch (error) {
       console.log(error);
@@ -37,11 +33,11 @@ export default function Profile() {
 
   const formik = useFormik<IUpdate>({
     initialValues: {
-      email: users?.email,
-      fullName: users?.fullName,
-      residence: users?.residence,
-      phone: users?.phone,
-      bio: users?.bio,
+      email: data?.email,
+      fullName: data?.fullName,
+      residence: data?.residence,
+      phone: data?.phone,
+      bio: data?.bio,
     },
 
     validationSchema: updateSchema,
@@ -67,6 +63,9 @@ export default function Profile() {
   const handleImageDelete = async (isDelete: boolean) => {
     try {
       await updatePic({ isDelete });
+      queryClient.invalidateQueries({
+        queryKey: ["myDetails"],
+      });
       window.location.reload();
     } catch (error) {
       console.log(error);
@@ -81,11 +80,22 @@ export default function Profile() {
 
     try {
       await updatePic(updateImage);
+      queryClient.invalidateQueries({
+        queryKey: ["myDetails"],
+      });
       window.location.reload();
     } catch (error) {
       console.log(error);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading data</div>;
+  }
 
   return (
     <>
@@ -96,7 +106,7 @@ export default function Profile() {
       <div>
         <div>
           <img
-            src={users?.image ? users.image : "/default.jpg"}
+            src={data?.image ? data.image : "/default.jpg"}
             alt="Profile Pic"
             style={{ width: "200px", height: "auto" }}
           />{" "}

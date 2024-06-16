@@ -12,6 +12,8 @@
   "dependencies": {
     "@material-ui/core": "^4.12.4",
     "@mui/material": "^5.15.20",
+    "@tanstack/react-query": "^5.45.0",
+    "@tanstack/react-query-devtools": "^5.45.0",
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "formik": "^2.4.6",

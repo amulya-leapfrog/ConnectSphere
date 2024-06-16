@@ -1,32 +1,29 @@
-import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import { me } from "../services/Auth";
 import Logout from "../components/Logout";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
-  const [name, setName] = useState("");
-  const [img, setImg] = useState("");
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["myDetails"],
+    queryFn: me,
+    staleTime: 1000 * 60 * 60,
+  });
 
-  useEffect(() => {
-    const getInfo = async () => {
-      try {
-        const data = await me();
-        setName(data.fullName);
-        setImg(data.image);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-    getInfo();
-  }, []);
+  if (error) {
+    return <div>Error loading data</div>;
+  }
 
   return (
     <div>
       <Header />
-      <h3>This is Home page: {name}</h3>
+      <h3>This is Home page: {data.fullName}</h3>
       <img
-        src={img ? img : "/default.jpg"}
+        src={data.image ? data.image : "/default.jpg"}
         alt="Profile Pic"
         style={{ width: "200px", height: "auto" }}
       />

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
 import { getUsers, sendFriendReq } from "../services/Users";
 import Header from "../components/Header";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export interface UserData {
   id: number;
@@ -14,35 +14,39 @@ export interface UserData {
 }
 
 export default function Explore() {
-  const [users, setUsers] = useState<UserData[]>([]);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const getInfo = async () => {
-      try {
-        const data = await getUsers();
-        setUsers(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const { data, error, isLoading } = useQuery<UserData[]>({
+    queryKey: ["suggestions"],
+    queryFn: getUsers,
+  });
 
-    getInfo();
-  }, []);
-
-  const handleFriendRequest = async (id: number) => {
-    try {
-      await sendFriendReq({ targetId: id });
+  const friendRequestMutation = useMutation({
+    mutationFn: sendFriendReq,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["suggestions", "myFriends"],
+      });
       window.location.reload();
-    } catch (error) {
+    },
+    onError: (error) => {
       console.log(error);
-    }
-  };
+    },
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading data</div>;
+  }
 
   return (
     <div>
       <Header />
       <h3>This is friends explore page</h3>
-      {users.map((item) => (
+      {data?.map((item) => (
         <div key={item.id}>
           <h1>{item.fullName}</h1>
           <p>{item.phone}</p>
@@ -53,7 +57,9 @@ export default function Explore() {
             alt="Profile Pic"
             style={{ width: "200px", height: "auto" }}
           />
-          <button onClick={() => handleFriendRequest(item.id)}>
+          <button
+            onClick={() => friendRequestMutation.mutate({ targetId: item.id })}
+          >
             Send a friend request
           </button>
         </div>

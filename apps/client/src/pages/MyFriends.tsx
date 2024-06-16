@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import {
   approveFriendRequest,
   deleteMyFriend,
   getMyFriends,
 } from "../services/Users";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export interface FriendData {
   friendId: number;
@@ -19,44 +19,38 @@ export interface FriendData {
 }
 
 export default function MyFriends() {
-  const [friends, setFriends] = useState<FriendData[]>([]);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const getInfo = async () => {
-      try {
-        const data = await getMyFriends();
-        setFriends(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const { data, error, isLoading } = useQuery<FriendData[]>({
+    queryKey: ["myFriends"],
+    queryFn: getMyFriends,
+  });
 
-    getInfo();
-  }, []);
-
-  const handleDeleteFriend = async (edgeId: string) => {
-    const friendDelete = {
-      edgeId: edgeId,
-    };
-    try {
-      await deleteMyFriend(friendDelete);
+  const friendDeleteMutation = useMutation({
+    mutationFn: deleteMyFriend,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["suggestions", "myFriends"],
+      });
       window.location.reload();
-    } catch (error) {
+    },
+    onError: (error) => {
       console.log(error);
-    }
-  };
+    },
+  });
 
-  const handleApproveRequest = async (edgeId: string) => {
-    const approveFriend = {
-      edgeId: edgeId,
-    };
-    try {
-      await approveFriendRequest(approveFriend);
+  const friendApproveMutation = useMutation({
+    mutationFn: approveFriendRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["myFriends"],
+      });
       window.location.reload();
-    } catch (error) {
+    },
+    onError: (error) => {
       console.log(error);
-    }
-  };
+    },
+  });
 
   const getButtonLabel = (
     status: string,
@@ -68,10 +62,10 @@ export default function MyFriends() {
       if (requestedBy === friendId) {
         return (
           <div>
-            <button onClick={() => handleDeleteFriend(edgeId)}>
+            <button onClick={() => friendDeleteMutation.mutate({ edgeId })}>
               Cancel Request
             </button>
-            <button onClick={() => handleApproveRequest(edgeId)}>
+            <button onClick={() => friendApproveMutation.mutate({ edgeId })}>
               Approve
             </button>
           </div>
@@ -79,7 +73,7 @@ export default function MyFriends() {
       } else {
         return (
           <div>
-            <button onClick={() => handleDeleteFriend(edgeId)}>
+            <button onClick={() => friendDeleteMutation.mutate({ edgeId })}>
               Unsend Request
             </button>
           </div>
@@ -88,7 +82,9 @@ export default function MyFriends() {
     } else if (status === "APPROVED") {
       return (
         <div>
-          <button onClick={() => handleDeleteFriend(edgeId)}>Unfriend</button>
+          <button onClick={() => friendDeleteMutation.mutate({ edgeId })}>
+            Unfriend
+          </button>
         </div>
       );
     } else {
@@ -96,11 +92,19 @@ export default function MyFriends() {
     }
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading data</div>;
+  }
+
   return (
     <div>
       <Header />
       <h3>This is friends explore page</h3>
-      {friends.map((item) => (
+      {data?.map((item) => (
         <div key={item.friendId}>
           <h1>{item.fullName}</h1>
           <p>{item.residence}</p>
