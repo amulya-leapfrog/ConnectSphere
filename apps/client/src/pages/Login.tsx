@@ -57,9 +57,9 @@ const LoginForm = () => {
         setApiError(errMessage);
       } else if (error instanceof AxiosError) {
         const errMessage = String(error.response?.data.message);
-        console.log("Throw toast: ", errMessage);
+        alert(errMessage);
       } else {
-        console.log("Some generic message");
+        alert("ERROR Occured");
       }
     }
   };

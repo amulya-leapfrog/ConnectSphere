@@ -24,6 +24,17 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
+  @Get('recommend')
+  recommendingUsers(@Req() req: CustomRequest) {
+    try {
+      const userId = req.user.id;
+      return this.userService.recommendingUsers(userId);
+    } catch (error) {
+      return error;
+    }
+  }
+
+  @UseGuards(JwtGuard)
   @Post('request')
   sendFriendRequest(
     @Req() req: CustomRequest,

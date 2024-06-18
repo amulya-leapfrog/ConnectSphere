@@ -25,12 +25,12 @@ export default function Explore() {
     mutationFn: sendFriendReq,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["suggestions", "myFriends"],
+        queryKey: ["suggestions", "myFriends", "recommendations"],
       });
       window.location.reload();
     },
     onError: (error) => {
-      console.log(error);
+      alert(error);
     },
   });
 

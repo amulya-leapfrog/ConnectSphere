@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { GremlinService } from '../gremlin/gremlin.service';
-import { extractUserData, vertexDataParser } from '@/utils/vertexDataParser';
+import { VertexParser } from '@/utils/vertexDataParser';
 import { UserData } from '@/interfaces/userData';
 import { MinioService } from '../minio.service';
 import { process } from 'gremlin';
@@ -10,6 +10,7 @@ export class UserService {
   constructor(
     private gremlinService: GremlinService,
     private minioService: MinioService,
+    private vertexParser: VertexParser,
   ) {}
   async getUsers(id: number) {
     const gremlinInstance = this.gremlinService.getClient();
@@ -20,9 +21,9 @@ export class UserService {
       .not(process.statics.both('friends').hasId(id))
       .toList();
 
-    const users = vertexDataParser(response);
+    const users = VertexParser.vertexDataParser(response);
 
-    const parseData: UserData[] = extractUserData(users);
+    const parseData: UserData[] = VertexParser.extractUserData(users);
 
     const userData = await Promise.all(
       parseData
@@ -37,6 +38,35 @@ export class UserService {
     );
 
     return userData;
+  }
+
+  async recommendingUsers(id: number) {
+    const gremlinInstance = this.gremlinService.getClient();
+
+    const response: any = await gremlinInstance
+      .V(id)
+      .both('friends')
+      .both('friends')
+      .not(process.statics.hasId(id))
+      .not(process.statics.both('friends').hasId(id))
+      .dedup()
+      .project('recommended', 'mutualFriends')
+      .by(process.statics.valueMap(true))
+      .by(
+        process.statics
+          .both('friends')
+          .where(process.statics.both('friends').hasId(id))
+          .project('id', 'fullName')
+          .by(process.statics.id())
+          .by(process.statics.values('fullName'))
+          .fold(),
+      )
+      .toList();
+
+    const parsedRecommendUser =
+      await this.vertexParser.parseRecommendation(response);
+
+    return parsedRecommendUser;
   }
 
   async sendFriendRequest(userId: number, targetId: number) {
@@ -105,22 +135,7 @@ export class UserService {
       )
       .toList();
 
-    const friendData = await Promise.all(
-      response.map(async (entry: any) => ({
-        friendId: entry.get('vertex').get('id'),
-        fullName: entry.get('vertex').get('fullName'),
-        bio: entry.get('vertex').get('bio'),
-        residence: entry.get('vertex').get('residence'),
-        phone: entry.get('vertex').get('phone'),
-        image: entry.get('vertex').get('image')
-          ? await this.minioService.getFileUrl(entry.get('vertex').get('image'))
-          : null,
-        requestedBy: entry.get('edge').get('requestedBy'),
-        receivedBy: entry.get('edge').get('receivedBy'),
-        status: entry.get('edge').get('status'),
-        edgeId: entry.get('edge').get('id').relationId,
-      })),
-    );
+    const friendData = this.vertexParser.friendsResponse(response);
 
     return friendData;
   }

@@ -20,6 +20,12 @@ export const getMyFriends = async () => {
   return data;
 };
 
+export const recommendFriends = async () => {
+  const { data } = await http.get(apiEndPoints.userRecommend);
+
+  return data;
+};
+
 export const deleteMyFriend = async (deleteData: DeleteFriend) => {
   const { data } = await http.post(apiEndPoints.userDeleteFriend, deleteData);
 

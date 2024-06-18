@@ -8,6 +8,7 @@ export const apiEndPoints = {
   updateMe: "auth/me/update",
   updateMyPic: "auth/me/updatePic",
   userFriends: "/users/friends",
+  userRecommend: "/users/recommend",
   userDeleteFriend: "/users/friends/delete",
   userApproveFriend: "/users/friends/approve",
 };

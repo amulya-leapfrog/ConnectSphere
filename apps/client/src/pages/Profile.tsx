@@ -47,7 +47,7 @@ export default function Profile() {
       });
       window.location.reload();
     } catch (error) {
-      console.log(error);
+      alert(error);
       setIsButtonEnabled(true);
     }
   };
@@ -89,7 +89,7 @@ export default function Profile() {
       });
       window.location.reload();
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 
@@ -106,7 +106,7 @@ export default function Profile() {
       });
       window.location.reload();
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 

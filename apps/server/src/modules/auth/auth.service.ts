@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { GremlinService } from '../gremlin/gremlin.service';
 import { LoginDto } from './dto/LoginDto';
 import { SignupDto, UpdateDto } from './dto/SignupDto';
-import { extractUserData, vertexDataParser } from '@/utils/vertexDataParser';
+import { VertexParser } from '@/utils/vertexDataParser';
 import { JwtPayload } from '@/interfaces/jwt';
 import { JwtService } from '@nestjs/jwt';
 import { MinioService } from '../minio.service';
@@ -32,7 +32,7 @@ export class AuthService {
       );
     }
 
-    const userData = vertexDataParser(response);
+    const userData = VertexParser.vertexDataParser(response);
 
     const isPasswordMatch = await bcrypt.compare(
       data.password,
@@ -87,9 +87,9 @@ export class AuthService {
       .hasId(userId)
       .toList();
 
-    const userData = vertexDataParser(response);
+    const userData = VertexParser.vertexDataParser(response);
 
-    const extractedData = extractUserData(userData);
+    const extractedData = VertexParser.extractUserData(userData);
 
     let imgURL: string | null = null;
 

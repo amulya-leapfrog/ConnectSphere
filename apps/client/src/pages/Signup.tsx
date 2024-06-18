@@ -21,7 +21,7 @@ export default function Signup() {
       await signup(values);
       navigate("/");
     } catch (error) {
-      console.log(error);
+      alert(error);
       setIsButtonEnabled(true);
     }
   };
