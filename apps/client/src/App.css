@@ -1,56 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+
+.login__container{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+#header{
+  padding: 0px !important;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.forBlur{
+  background-image: url('/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: blur(15px);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
+
+} 
+
+#form__container{
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f4f4f8;
+  box-shadow: 0px 0px 50px 5px rgba(0,0,0,0.75);
+  width: 500px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
 
-.card {
-  padding: 2em;
-}
+.MuiContainer-root{
+  padding: 0 !important;
+  padding-right: 0px;
+  overflow: visible;
+} 
 
-.read-the-docs {
-  color: #888;
-}
 
 .login__header{
   font-family: Poppins;
   font-weight: 600;
   margin-bottom: 15px;
-}
-
-#form__container{
-  width: 500px;
 }
 
 #form{
@@ -60,6 +54,19 @@
   width: 100%;
 }
 
+.login__password{
+  position: relative;
+}
+
+.login__password_eye{
+  background: none;
+  border: none;
+  font-size: 20px;
+  position: absolute;
+  right: 10px;
+  top: 15px;
+  cursor: pointer;
+}
 
 #loginBtn:disabled{
   cursor: not-allowed;
@@ -68,7 +75,433 @@
 
 .error{
   color: red;
+  font-family: Poppins;
   font-size: 12px;
   text-align: left;
   margin-bottom: 5px;
+}
+
+.login__footer{
+  font-family: Poppins;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgb(98, 96, 96);
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.login__footer a{
+  color: #3f51b5;
+  text-decoration: none;
+}
+
+.signup__container{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signup__container h1{
+  font-family: Poppins;
+  font-weight: 600;
+  margin-top: 0;
+}
+
+.signup__formData{
+  display: flex;
+  align-items: center;
+  gap: 20px
+}
+
+.signup__formData input{
+  min-width: 250px;
+}
+
+.signup__element{
+  position: relative;
+  min-height: 85px;
+}
+
+.signup__bio{
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #c4c4c4;
+  font-family: Arial;
+  font-weight: 400;
+  font-size: 1rem;
+  padding: 10px 14px;
+}
+
+.signup__bio:hover{
+  border: 1px solid #000000de
+}
+
+.signup__bio:focus-visible{
+  outline: none;
+  border: 2px solid #1976d2;
+}
+
+.submit__btn{
+  margin-top: 20px;
+}
+
+.signup__container a{
+  color: #1976d2;
+}
+
+.signup__image{
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed #c4c4c4;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.signup__image:hover{
+  border: 1px dashed #000000de;
+}
+
+.signup__image:focus-visible{
+  outline: none !important;
+  border: 5px solid #1976d2 !important;
+}
+
+#drop-area{
+  width: 100%;
+}
+
+#img-view{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 85px;
+  width: auto;
+}
+
+#img-view p{
+  margin-top: 0;
+  font-family: Poppins;
+  font-size: 14px;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.after__header{
+  margin-top: 90px;
+  display: flex;
+  justify-content: center;
+}
+
+.home__logo{
+  cursor: pointer !important;
+}
+
+.home__profileName{
+  color: white;
+  padding: 5px 10px 5px 20px;
+  margin-left: -15px;
+  border-radius: 5px;
+  font-size: 18px;
+  font-family: Poppins;
+  font-weight: 500;
+}
+
+.icon__btn:hover{
+  border-radius: 0 ;
+}
+
+.MuiTouchRipple-root:focus-visible{
+  border-radius: 0;
+}
+
+.profile__container{
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.profile__img{
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.image__container{
+  width: 150px;
+  height: 150px;
+}
+
+.profile__img img{
+  border-radius: 5px;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.profile__img button{
+  background: transparent;
+  font-family: Poppins;
+  padding: 5px 20px;
+  border-radius: 4px;
+}
+
+.editBtn{
+  border: 1px solid #1976d2;
+}
+
+.editBtn:hover{
+  background: #1976d2;
+  color: white;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.updateBtn{
+  border: 1px solid #097709;
+}
+
+.updateBtn:hover{
+  background: #097709;
+  color: white;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.deleteBtn{
+  border: 1px solid #bc0606;
+}
+
+.deleteBtn:hover{
+  background: #bc0606;
+  color: white;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.explore__container {
+  width: 800px;
+}
+
+.page__header{
+  font-size: 30px;
+  font-weight: 600;
+  font-family: Poppins;
+  margin-bottom: 40px;
+  margin-top: 0;
+}
+
+.explore__people{
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.explore__peopleCard{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-family: Poppins;
+}
+
+.explore__peopleInfo{
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.explore__image{
+  width: 60px;
+  height: 60px;
+}
+
+.explore__image img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center; 
+  border-radius: 100px;
+}
+
+.explore__peopleInfo h1{
+  font-size: 20px;
+  margin: 0;
+}
+
+.explore__peopleInfo p{
+  margin: 0;
+  font-size: 14px;
+}
+
+.explore__personalInfo{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.explore__desc{
+  max-width: 500px;
+}
+
+.btnContainer button{
+  background: transparent;
+  border: 1px solid #1976d2;  
+  font-family: Poppins;
+  padding: 5px 20px;
+  border-radius: 4px;
+}
+
+.btnContainer button:hover{
+  background: #1976d2; 
+  color: white; 
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.friendsBtns{
+  display: flex;
+  gap: 10px;
+}
+
+#deleteBtn{
+  border: 1px solid #bc0606;
+}
+
+#deleteBtn:hover{
+  background: #bc0606;
+  color: white;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+#updateBtn{
+  border: 1px solid #097709;
+}
+
+#updateBtn:hover{
+  background: #097709;
+  color: white;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.empty__state{
+  font-size: 16px;
+  font-family: Poppins;
+}
+
+.empty__state a{
+  text-decoration: none;
+  color: #1976d2;
+}
+
+.home__container{
+  width: 600px;
+}
+
+.feed__container{
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  font-family: Poppins;
+}
+
+.feed__card{
+  background-color: white;
+  box-shadow: 0px 0px 2px 0px black;
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.feed__cardHeader{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.feed__cardHeader-user{
+  width: 60px;
+  height: 60px;
+}
+
+.feed__cardHeader-user img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center; 
+  border-radius: 100px;
+}
+
+.feed__cardHeader-info p{
+  margin: 0;
+  font-size: 18px;
+}
+
+.feed__cardHeader-info span{
+  margin: 0;
+  font-size: 14px;
+}
+
+.feed__post{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.feed__postImage{
+  width: 580px;
+  height: 400px;
+}
+
+.feed__postImage img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center; 
+}
+
+.feed__postComment{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.feed__comment-img{
+  width: 50px;
+  height: 50px;
+}
+
+.feed__comment-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center; 
+  border-radius: 100px;
+}
+
+.feed__comment-input{
+  position: relative;
+  width: 100%;
+}
+
+.feed__comment-input input{
+  padding-right: 50px;
+  word-wrap: break-word;
+}
+
+
+.feed__comment-input svg{
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  cursor: pointer;
 }

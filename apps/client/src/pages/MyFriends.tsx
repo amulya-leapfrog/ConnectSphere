@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import {
   approveFriendRequest,
@@ -12,6 +13,7 @@ export interface FriendData {
   fullName: string;
   bio: string;
   residence: string;
+  phone: string;
   status: string;
   requestedBy: number;
   receivedBy: number;
@@ -61,28 +63,38 @@ export default function MyFriends() {
     if (status === "PENDING") {
       if (requestedBy === friendId) {
         return (
-          <div>
-            <button onClick={() => friendDeleteMutation.mutate({ edgeId })}>
-              Cancel Request
-            </button>
-            <button onClick={() => friendApproveMutation.mutate({ edgeId })}>
+          <div className="friendsBtns">
+            <button
+              onClick={() => friendApproveMutation.mutate({ edgeId })}
+              id="updateBtn"
+            >
               Approve
+            </button>
+            <button
+              onClick={() => friendDeleteMutation.mutate({ edgeId })}
+              id="deleteBtn"
+            >
+              Cancel Request
             </button>
           </div>
         );
       } else {
         return (
-          <div>
-            <button onClick={() => friendDeleteMutation.mutate({ edgeId })}>
-              Unsend Request
-            </button>
-          </div>
+          <button
+            onClick={() => friendDeleteMutation.mutate({ edgeId })}
+            id="deleteBtn"
+          >
+            Unsend Request
+          </button>
         );
       }
     } else if (status === "APPROVED") {
       return (
         <div>
-          <button onClick={() => friendDeleteMutation.mutate({ edgeId })}>
+          <button
+            onClick={() => friendDeleteMutation.mutate({ edgeId })}
+            id="deleteBtn"
+          >
             Unfriend
           </button>
         </div>
@@ -101,27 +113,54 @@ export default function MyFriends() {
   }
 
   return (
-    <div>
+    <>
       <Header />
-      <h3>This is friends explore page</h3>
-      {data?.map((item) => (
-        <div key={item.friendId}>
-          <h1>{item.fullName}</h1>
-          <p>{item.residence}</p>
-          <p>{item.bio}</p>
-          <img
-            src={item.image ? item.image : "/default.jpg"}
-            alt="Profile Pic"
-            style={{ width: "200px", height: "auto" }}
-          />
-          {getButtonLabel(
-            item.status,
-            item.friendId,
-            item.requestedBy,
-            item.edgeId
-          )}
+      <div className="after__header">
+        <div className="explore__container">
+          <h3 className="page__header">My Friends</h3>
+          <div className="explore__people">
+            {data && data.length > 0 ? (
+              data?.map((item) => (
+                <div key={item.friendId}>
+                  <div className="explore__peopleCard">
+                    <div className="explore__peopleInfo">
+                      <div className="explore__image">
+                        <img
+                          src={item.image ? item.image : "/default.jpg"}
+                          alt="Profile Pic"
+                        />
+                      </div>
+                      <div className="explore__desc">
+                        <h1>{item.fullName}</h1>
+                        <div className="explore__personalInfo">
+                          <p>Residence: {item.residence}</p>
+                          <p>Phone: {item.phone}</p>
+                        </div>
+                        <p>{item.bio}</p>
+                      </div>
+                    </div>
+                    <div className="btnContainer">
+                      {getButtonLabel(
+                        item.status,
+                        item.friendId,
+                        item.requestedBy,
+                        item.edgeId
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="empty__state">
+                You haven't made any friends yet.{" "}
+                <span>
+                  <Link to="/explore">Make Friends</Link>
+                </span>
+              </div>
+            )}
+          </div>
         </div>
-      ))}
-    </div>
+      </div>
+    </>
   );
 }

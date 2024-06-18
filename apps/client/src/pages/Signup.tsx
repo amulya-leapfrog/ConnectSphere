@@ -5,6 +5,9 @@ import { ISignup } from "../interfaces/Auth";
 import { signupSchema } from "../schemas/authSchema";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import TextField from "@mui/material/TextField";
+import { Button, TextareaAutosize } from "@material-ui/core";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 export default function Signup() {
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
@@ -56,134 +59,187 @@ export default function Signup() {
   });
 
   return (
-    <div>
-      <h1>This is Signup page</h1>
-      <Link to="/">
-        <button>Go back to login</button>
-      </Link>
+    <div className="signup__container">
+      <div>
+        <h1>Signup</h1>
 
-      <form
-        onSubmit={formik.handleSubmit}
-        className="form__login"
-        encType="multipart/form-data"
-      >
-        <div className="form-login__inputs">
-          <label htmlFor="email">Email</label>
-          <input
-            type="text"
-            name="email"
-            onChange={(e) => {
-              formik.setFieldValue("email", e.target.value);
-            }}
-            value={formik.values.email}
-          />
-          {formik.touched.email && formik.errors.email && (
-            <div style={{ color: "red" }}>{formik.errors.email}</div>
-          )}
-        </div>
+        <form
+          onSubmit={formik.handleSubmit}
+          id="form"
+          style={{ gap: 0 }}
+          encType="multipart/form-data"
+        >
+          <div className="signup__formData">
+            <div className="signup__element">
+              <TextField
+                name="email"
+                fullWidth
+                label="Email"
+                variant="outlined"
+                value={formik.values.email}
+                onChange={(e) => {
+                  formik.setFieldValue("email", e.target.value);
+                }}
+              />
 
-        <div className="form-login__inputs">
-          <label htmlFor="password">Password</label>
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            onChange={(e) => {
-              formik.setFieldValue("password", e.target.value);
-            }}
-            value={formik.values.password}
-          />
-          {formik.touched.password && formik.errors.password && (
-            <div style={{ color: "red" }}>{formik.errors.password}</div>
-          )}
-          <button
-            type="button"
-            className="form-login__password_eye"
-            onClick={() => setShowPassword(!showPassword)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                setShowPassword(!showPassword);
+              {formik.touched.email && formik.errors.email && (
+                <div className="error">{formik.errors.email}</div>
+              )}
+            </div>
+
+            <div className="signup__element">
+              <TextField
+                name="password"
+                fullWidth
+                type={showPassword ? "text" : "password"}
+                label="Password"
+                variant="outlined"
+                value={formik.values.password}
+                onChange={(e) => {
+                  formik.setFieldValue("password", e.target.value);
+                }}
+              />
+              {formik.touched.password && formik.errors.password && (
+                <div className="error">{formik.errors.password}</div>
+              )}
+              <button
+                type="button"
+                className="login__password_eye"
+                onClick={() => setShowPassword(!showPassword)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setShowPassword(!showPassword);
+                  }
+                }}
+              >
+                {showPassword ? <FaEye /> : <FaEyeSlash />}
+              </button>
+            </div>
+          </div>
+
+          <div className="signup__formData">
+            <div className="signup__element">
+              <TextField
+                name="fullName"
+                fullWidth
+                label="Full Name"
+                variant="outlined"
+                value={formik.values.fullName}
+                onChange={(e) => {
+                  formik.setFieldValue("fullName", e.target.value);
+                }}
+              />
+              {formik.touched.fullName && formik.errors.fullName && (
+                <div className="error">{formik.errors.fullName}</div>
+              )}
+            </div>
+
+            <div className="signup__element">
+              <TextField
+                name="phone"
+                fullWidth
+                label="Phone No."
+                variant="outlined"
+                value={formik.values.phone}
+                onChange={(e) => {
+                  formik.setFieldValue("phone", e.target.value);
+                }}
+              />
+              {formik.touched.phone && formik.errors.phone && (
+                <div className="error">{formik.errors.phone}</div>
+              )}
+            </div>
+          </div>
+
+          <div className="signup__element">
+            <TextField
+              name="residence"
+              fullWidth
+              label="Residence"
+              variant="outlined"
+              value={formik.values.residence}
+              onChange={(e) => {
+                formik.setFieldValue("residence", e.target.value);
+              }}
+            />
+            {formik.touched.residence && formik.errors.residence && (
+              <div className="error">{formik.errors.residence}</div>
+            )}
+          </div>
+
+          <div className="signup__element">
+            <TextareaAutosize
+              name="bio"
+              placeholder="Bio"
+              onChange={(e) => {
+                formik.setFieldValue("bio", e.target.value);
+              }}
+              minRows={4}
+              value={formik.values.bio}
+              className="signup__bio"
+            />
+          </div>
+
+          <div className="signup__image">
+            <label
+              htmlFor="input-file"
+              id="drop-area"
+              style={{ cursor: "pointer" }}
+            >
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                id="input-file"
+                onChange={(e) => {
+                  const file = e.target.files && e.target.files[0];
+                  const parentDiv = document.getElementById(
+                    "img-view"
+                  ) as HTMLElement;
+                  if (file) {
+                    const imgLink = URL.createObjectURL(file);
+                    parentDiv.style.backgroundImage = `url(${imgLink})`;
+                    parentDiv.style.backgroundPosition = "center";
+                    parentDiv.style.backgroundSize = "cover";
+                    parentDiv.textContent = "";
+                  }
+                  formik.setFieldValue("image", file);
+                }}
+              />
+              <div id="img-view">
+                <CloudUploadIcon
+                  style={{ fontSize: "50px", color: "#1976d2" }}
+                />
+                <p>Click here to upload your profile picture</p>
+              </div>
+            </label>
+          </div>
+
+          <div className="submit__btn">
+            <Button
+              disabled={!formik.dirty || !isButtonEnabled}
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              id="loginBtn"
+              style={
+                isButtonEnabled
+                  ? { backgroundColor: "#1976d2" }
+                  : { backgroundColor: "" }
               }
-            }}
-          >
-            {showPassword ? <FaEye /> : <FaEyeSlash />}
-          </button>
-        </div>
-
-        <div className="form-login__inputs">
-          <label htmlFor="fullName">Full Name</label>
-          <input
-            type="text"
-            name="fullName"
-            onChange={(e) => {
-              formik.setFieldValue("fullName", e.target.value);
-            }}
-            value={formik.values.fullName}
-          />
-          {formik.touched.fullName && formik.errors.fullName && (
-            <div style={{ color: "red" }}>{formik.errors.fullName}</div>
-          )}
-        </div>
-
-        <div className="form-login__inputs">
-          <label htmlFor="residence">Residence</label>
-          <input
-            type="text"
-            name="residence"
-            onChange={(e) => {
-              formik.setFieldValue("residence", e.target.value);
-            }}
-            value={formik.values.residence}
-          />
-          {formik.touched.residence && formik.errors.residence && (
-            <div style={{ color: "red" }}>{formik.errors.residence}</div>
-          )}
-        </div>
-
-        <div className="form-login__inputs">
-          <label htmlFor="phone">Phone No.</label>
-          <input
-            type="text"
-            name="phone"
-            onChange={(e) => {
-              formik.setFieldValue("phone", e.target.value);
-            }}
-            value={formik.values.phone}
-          />
-          {formik.touched.phone && formik.errors.phone && (
-            <div style={{ color: "red" }}>{formik.errors.phone}</div>
-          )}
-        </div>
-
-        <div className="form-login__inputs">
-          <label htmlFor="bio">Bio</label>
-          <textarea
-            name="bio"
-            onChange={(e) => {
-              formik.setFieldValue("bio", e.target.value);
-            }}
-            value={formik.values.bio}
-          />
-        </div>
-
-        <div className="form-login__inputs">
-          <label htmlFor="image">Profile Pic</label>
-          <input
-            name="image"
-            type="file"
-            onChange={(e) => {
-              const file = e.target.files && e.target.files[0];
-              formik.setFieldValue("image", file);
-            }}
-          />
-        </div>
-
-        <div className="form__submit-button">
-          <button type="submit" disabled={!formik.dirty || !isButtonEnabled}>
-            {" "}
-            Submit
-          </button>
-        </div>
-      </form>
+            >
+              Submit
+            </Button>
+          </div>
+          <p className="login__footer">
+            Already Have An Account?{" "}
+            <span>
+              <Link to="/">Login</Link>
+            </span>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }

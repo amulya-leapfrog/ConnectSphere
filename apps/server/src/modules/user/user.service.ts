@@ -89,6 +89,7 @@ export class UserService {
             'fullName',
             'bio',
             'residence',
+            'phone',
             'image',
           )
           .by(process.statics.id())
@@ -99,6 +100,7 @@ export class UserService {
           .by('fullName')
           .by('bio')
           .by('residence')
+          .by('phone')
           .by('image'),
       )
       .toList();
@@ -109,6 +111,7 @@ export class UserService {
         fullName: entry.get('vertex').get('fullName'),
         bio: entry.get('vertex').get('bio'),
         residence: entry.get('vertex').get('residence'),
+        phone: entry.get('vertex').get('phone'),
         image: entry.get('vertex').get('image')
           ? await this.minioService.getFileUrl(entry.get('vertex').get('image'))
           : null,

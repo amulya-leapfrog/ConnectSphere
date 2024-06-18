@@ -43,27 +43,46 @@ export default function Explore() {
   }
 
   return (
-    <div>
+    <>
       <Header />
-      <h3>This is friends explore page</h3>
-      {data?.map((item) => (
-        <div key={item.id}>
-          <h1>{item.fullName}</h1>
-          <p>{item.phone}</p>
-          <p>{item.residence}</p>
-          <p>{item.bio}</p>
-          <img
-            src={item.image ? item.image : "/default.jpg"}
-            alt="Profile Pic"
-            style={{ width: "200px", height: "auto" }}
-          />
-          <button
-            onClick={() => friendRequestMutation.mutate({ targetId: item.id })}
-          >
-            Send a friend request
-          </button>
+      <div className="after__header">
+        <div className="explore__container">
+          <h3 className="page__header">People You May Know</h3>
+          <div className="explore__people">
+            {data?.map((item) => (
+              <div key={item.id}>
+                <div className="explore__peopleCard">
+                  <div className="explore__peopleInfo">
+                    <div className="explore__image">
+                      <img
+                        src={item.image ? item.image : "/default.jpg"}
+                        alt="Profile Pic"
+                      />
+                    </div>
+                    <div className="explore__desc">
+                      <h1>{item.fullName}</h1>
+                      <div className="explore__personalInfo">
+                        <p>Residence: {item.residence}</p>
+                        <p>Phone: {item.phone}</p>
+                      </div>
+                      <p>{item.bio}</p>
+                    </div>
+                  </div>
+                  <div className="btnContainer">
+                    <button
+                      onClick={() =>
+                        friendRequestMutation.mutate({ targetId: item.id })
+                      }
+                    >
+                      Send a friend request
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
-    </div>
+      </div>
+    </>
   );
 }

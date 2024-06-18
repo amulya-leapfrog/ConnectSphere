@@ -6,20 +6,18 @@ import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import AuthProvider from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoutes";
-import Logout from "./components/Logout";
 import Explore from "./pages/Explore";
 import MyFriends from "./pages/MyFriends";
 
 function App() {
   return (
-    <div>
+    <>
       <BrowserRouter>
         <AuthProvider>
           <Routes>
             <Route index element={<Login />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
-            <Route path="logout" element={<Logout />} />
             <Route
               path="home"
               element={
@@ -55,7 +53,7 @@ function App() {
           </Routes>
         </AuthProvider>
       </BrowserRouter>
-    </div>
+    </>
   );
 }
 

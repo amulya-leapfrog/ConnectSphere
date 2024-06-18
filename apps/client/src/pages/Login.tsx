@@ -19,7 +19,6 @@ import { useAuth } from "../context/AuthContext";
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
-    marginTop: theme.spacing(4),
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
@@ -97,86 +96,89 @@ const LoginForm = () => {
   });
 
   return (
-    <div id="form__container">
-      <Container component="main" maxWidth="xs">
-        <div className={classes.formContainer}>
-          <Typography variant="h4" gutterBottom>
-            <div className="login__header">Login</div>
-          </Typography>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              formik.handleSubmit(e);
-            }}
-            id="form"
-          >
-            <div>
-              <TextField
-                className={classes.textField}
-                label="Email"
-                variant="outlined"
-                fullWidth
-                value={formik.values.email}
-                onChange={(e) => {
-                  formik.setFieldValue("email", e.target.value);
-                }}
-              />
-              {formik.touched.email && formik.errors.email && (
-                <div className="error">{formik.errors.email}</div>
-              )}
-            </div>
-            <div>
+    <div className="login__container">
+      <div className="forBlur"></div>
+      <div id="form__container">
+        <Container>
+          <div className={classes.formContainer}>
+            <Typography variant="h4" gutterBottom>
+              <div className="login__header">Login</div>
+            </Typography>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                formik.handleSubmit(e);
+              }}
+              id="form"
+            >
               <div>
                 <TextField
                   className={classes.textField}
-                  label="Password"
+                  label="Email"
                   variant="outlined"
                   fullWidth
-                  type={showPassword ? "text" : "password"}
-                  value={formik.values.password}
+                  value={formik.values.email}
                   onChange={(e) => {
-                    formik.setFieldValue("password", e.target.value);
+                    formik.setFieldValue("email", e.target.value);
                   }}
                 />
-                <button
-                  type="button"
-                  className="form-login__password_eye"
-                  onClick={() => setShowPassword(!showPassword)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setShowPassword(!showPassword);
-                    }
-                  }}
-                >
-                  {showPassword ? <FaEye /> : <FaEyeSlash />}
-                </button>
-                {formik.touched.password && formik.errors.password && (
-                  <div className="error">{formik.errors.password}</div>
+                {formik.touched.email && formik.errors.email && (
+                  <div className="error">{formik.errors.email}</div>
                 )}
               </div>
-            </div>
-            {displayError()}
+              <div className="login__password">
+                <div>
+                  <TextField
+                    className={classes.textField}
+                    label="Password"
+                    variant="outlined"
+                    fullWidth
+                    type={showPassword ? "text" : "password"}
+                    value={formik.values.password}
+                    onChange={(e) => {
+                      formik.setFieldValue("password", e.target.value);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="login__password_eye"
+                    onClick={() => setShowPassword(!showPassword)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        setShowPassword(!showPassword);
+                      }
+                    }}
+                  >
+                    {showPassword ? <FaEye /> : <FaEyeSlash />}
+                  </button>
+                  {formik.touched.password && formik.errors.password && (
+                    <div className="error">{formik.errors.password}</div>
+                  )}
+                </div>
+                {displayError()}
+              </div>
 
-            <Button
-              className={classes.button}
-              disabled={!formik.dirty || !isButtonEnabled}
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              id="loginBtn"
-            >
-              Login
-            </Button>
-          </form>
-        </div>
-        <p>
-          Don't Have An Account?{" "}
-          <span>
-            <Link to="/signup">Signup</Link>
-          </span>
-        </p>
-      </Container>
+              <Button
+                className={classes.button}
+                disabled={!formik.dirty || !isButtonEnabled}
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                id="loginBtn"
+              >
+                Login
+              </Button>
+            </form>
+          </div>
+          <p className="login__footer">
+            Don't Have An Account?{" "}
+            <span>
+              <Link to="/signup">Signup</Link>
+            </span>
+          </p>
+        </Container>
+      </div>
     </div>
   );
 };
