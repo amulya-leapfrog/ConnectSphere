@@ -1,6 +1,7 @@
 import { getUsers, sendFriendReq } from "../services/Users";
 import Header from "../components/Header";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 export interface UserData {
   id: number;
@@ -29,8 +30,8 @@ export default function Explore() {
       });
       window.location.reload();
     },
-    onError: (error) => {
-      alert(error);
+    onError: () => {
+      toast.error("Friend Request Failed");
     },
   });
 

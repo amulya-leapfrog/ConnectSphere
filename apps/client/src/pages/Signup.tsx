@@ -8,6 +8,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import TextField from "@mui/material/TextField";
 import { Button, TextareaAutosize } from "@material-ui/core";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { toast } from "react-toastify";
 
 export default function Signup() {
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
@@ -20,8 +21,8 @@ export default function Signup() {
     try {
       await signup(values);
       navigate("/");
-    } catch (error) {
-      alert(error);
+    } catch (err) {
+      toast.error("Submit Failed");
       setIsButtonEnabled(true);
     }
   };

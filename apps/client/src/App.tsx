@@ -8,6 +8,8 @@ import AuthProvider from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import Explore from "./pages/Explore";
 import MyFriends from "./pages/MyFriends";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -53,6 +55,7 @@ function App() {
           </Routes>
         </AuthProvider>
       </BrowserRouter>
+      <ToastContainer />
     </>
   );
 }

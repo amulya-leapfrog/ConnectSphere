@@ -16,6 +16,7 @@ import { setCookies } from "../utils/cookies";
 import { AxiosError } from "axios";
 import { getErrorMessage } from "../utils/errors";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
@@ -47,19 +48,19 @@ const LoginForm = () => {
       setCookies(accessToken, refreshToken);
       isLogin();
       navigate("/home");
-    } catch (error) {
+    } catch (err) {
       setIsButtonEnabled(true);
       if (
-        error instanceof AxiosError &&
-        (error.response?.status === 403 || error.response?.status === 404)
+        err instanceof AxiosError &&
+        (err.response?.status === 403 || err.response?.status === 404)
       ) {
-        const errMessage = getErrorMessage(error);
+        const errMessage = getErrorMessage(err);
         setApiError(errMessage);
-      } else if (error instanceof AxiosError) {
-        const errMessage = String(error.response?.data.message);
-        alert(errMessage);
+      } else if (err instanceof AxiosError) {
+        const errMessage = String(err.response?.data.message);
+        toast.error(errMessage);
       } else {
-        alert("ERROR Occured");
+        toast.error("LOGIN FAILED");
       }
     }
   };

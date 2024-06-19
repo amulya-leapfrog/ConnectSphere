@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { TextField, TextareaAutosize } from "@material-ui/core";
 import { Button } from "@mui/material";
+import { toast } from "react-toastify";
 
 export default function Profile() {
   const queryClient = useQueryClient();
@@ -46,8 +47,8 @@ export default function Profile() {
         queryKey: ["myDetails"],
       });
       window.location.reload();
-    } catch (error) {
-      alert(error);
+    } catch (err) {
+      toast.error("Submit Failed");
       setIsButtonEnabled(true);
     }
   };
@@ -88,8 +89,8 @@ export default function Profile() {
         queryKey: ["myDetails"],
       });
       window.location.reload();
-    } catch (error) {
-      alert(error);
+    } catch (err) {
+      toast.error("Image Delete Failed");
     }
   };
 
@@ -105,8 +106,8 @@ export default function Profile() {
         queryKey: ["myDetails"],
       });
       window.location.reload();
-    } catch (error) {
-      alert(error);
+    } catch (err) {
+      toast.error("Image Update Failed");
     }
   };
 
@@ -146,6 +147,7 @@ export default function Profile() {
             <input
               id="fileInput"
               type="file"
+              accept="image/*"
               style={{ display: "none" }}
               onChange={handleFileChange}
             />

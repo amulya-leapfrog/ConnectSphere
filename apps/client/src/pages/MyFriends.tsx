@@ -8,6 +8,7 @@ import {
   sendFriendReq,
 } from "../services/Users";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 export interface FriendData {
   friendId: number;
@@ -66,8 +67,8 @@ export default function MyFriends() {
       });
       window.location.reload();
     },
-    onError: (error) => {
-      alert(error);
+    onError: () => {
+      toast.error("Friend Delete Failed");
     },
   });
 
@@ -79,8 +80,8 @@ export default function MyFriends() {
       });
       window.location.reload();
     },
-    onError: (error) => {
-      alert(error);
+    onError: () => {
+      toast.error("Friend Approve Failed");
     },
   });
 
@@ -92,8 +93,8 @@ export default function MyFriends() {
       });
       window.location.reload();
     },
-    onError: (error) => {
-      alert(error);
+    onError: () => {
+      toast.error("Friend Request Failed");
     },
   });
 
